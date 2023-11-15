@@ -195,7 +195,7 @@ impl Default for ModinfoValueVersion {
 ///
 /// let mut modinfo = Modinfo::new();
 ///
-/// modinfo.set_version("0.1.0");
+/// modinfo.set_version("0.1.0".to_owned());
 /// modinfo.set_value_for("name", "SomeMod");
 /// modinfo.set_value_for("display_name", "Some Mod");
 /// modinfo.set_value_for("author", "Some Author");

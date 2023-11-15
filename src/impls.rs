@@ -96,7 +96,7 @@ impl Modinfo {
     /// use modinfo::Modinfo;
     ///
     /// let mut modinfo = Modinfo::default();
-    /// modinfo.set_version("1.2.3");
+    /// modinfo.set_version("1.2.3".to_owned());
     /// assert_eq!(modinfo.get_version(), &semver::Version::new(1, 2, 3));
     /// ```
     pub fn set_version(&mut self, version: String) {
@@ -175,7 +175,7 @@ impl Modinfo {
     /// use std::path::PathBuf;
     ///
     /// let mut modinfo = Modinfo::default();
-    /// modinfo.set_version("1.2.3-foo+bar");
+    /// modinfo.set_version("1.2.3-foo+bar".to_owned());
     /// modinfo.bump_version_major();
     /// assert_eq!(modinfo.get_version(), &semver::Version::new(2, 0, 0));
     /// ```
@@ -191,7 +191,7 @@ impl Modinfo {
     /// use std::path::PathBuf;
     ///
     /// let mut modinfo = Modinfo::default();
-    /// modinfo.set_version("1.2.3-foo+bar");
+    /// modinfo.set_version("1.2.3-foo+bar".to_owned());
     /// modinfo.bump_version_minor();
     /// assert_eq!(modinfo.get_version(), &semver::Version::new(1, 3, 0));
     /// ```
@@ -207,7 +207,7 @@ impl Modinfo {
     /// use std::path::PathBuf;
     ///
     /// let mut modinfo = Modinfo::default();
-    /// modinfo.set_version("1.2.3-foo+bar");
+    /// modinfo.set_version("1.2.3-foo+bar".to_owned());
     /// modinfo.bump_version_patch();
     /// assert_eq!(modinfo.get_version(), &semver::Version::new(1, 2, 4));
     /// ```
@@ -222,7 +222,7 @@ impl Modinfo {
     /// use std::path::PathBuf;
     ///
     /// let mut modinfo = Modinfo::default();
-    /// modinfo.set_version("1.2.3");
+    /// modinfo.set_version("1.2.3".to_owned());
     /// modinfo.add_version_pre("foo");
     /// assert_eq!(modinfo.get_version(), &semver::Version::parse("1.2.3-foo").unwrap());
     /// ```
@@ -237,7 +237,7 @@ impl Modinfo {
     /// use std::path::PathBuf;
     ///
     /// let mut modinfo = Modinfo::default();
-    /// modinfo.set_version("1.2.3");
+    /// modinfo.set_version("1.2.3".to_owned());
     /// modinfo.add_version_build("bar");
     /// assert_eq!(modinfo.get_version(), &semver::Version::parse("1.2.3+bar").unwrap());
     /// ```
