@@ -13,7 +13,7 @@ license = "MIT"
 keywords = ["7dtd", "game-dev", "modinfo", "xml", "modding"]
 categories = [
   "data-structures",
-  "development_tools",
+  "development-tools",
   "game-development",
   "parser-implementations",
 ]
