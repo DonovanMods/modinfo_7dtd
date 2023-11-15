@@ -1,4 +1,4 @@
-use modinfo::*;
+use super::*;
 
 #[test]
 fn from_str_v1_test() {
@@ -8,7 +8,7 @@ fn from_str_v1_test() {
     assert_eq!(
         result.name,
         ModinfoValue {
-            value: Some("SomeInternalName".to_string())
+            value: Some("SomeInternalName".to_owned().into())
         }
     );
     assert_eq!(result.display_name, ModinfoValue { value: None });
@@ -16,19 +16,19 @@ fn from_str_v1_test() {
         result.version,
         ModinfoValueVersion {
             value: version,
-            compat: Some("A99".to_string()),
+            compat: Some("A99".to_owned().into()),
         }
     );
     assert_eq!(
         result.description,
         ModinfoValue {
-            value: Some("Mod to show format of ModInfo v1".to_string())
+            value: Some("Mod to show format of ModInfo v1".to_owned().into())
         }
     );
     assert_eq!(
         result.author,
         ModinfoValue {
-            value: Some("Name".to_string())
+            value: Some("Name".to_owned().into())
         }
     );
     assert_eq!(result.website, ModinfoValue { value: None });
@@ -42,7 +42,7 @@ fn from_str_v1_no_compat_test() {
     assert_eq!(
         result.name,
         ModinfoValue {
-            value: Some("SomeInternalName".to_string())
+            value: Some("SomeInternalName".to_owned().into())
         }
     );
     assert_eq!(result.display_name, ModinfoValue { value: None });
@@ -56,13 +56,13 @@ fn from_str_v1_no_compat_test() {
     assert_eq!(
         result.description,
         ModinfoValue {
-            value: Some("Mod to show format of ModInfo v1".to_string())
+            value: Some("Mod to show format of ModInfo v1".to_owned().into())
         }
     );
     assert_eq!(
         result.author,
         ModinfoValue {
-            value: Some("Name".to_string())
+            value: Some("Name".to_owned().into())
         }
     );
     assert_eq!(result.website, ModinfoValue { value: None });
@@ -76,38 +76,38 @@ fn from_str_v2_test() {
     assert_eq!(
         result.name,
         ModinfoValue {
-            value: Some("SomeInternalName".to_string())
+            value: Some("SomeInternalName".to_owned().into())
         }
     );
     assert_eq!(
         result.display_name,
         ModinfoValue {
-            value: Some("Official Mod Name".to_string())
+            value: Some("Official Mod Name".to_owned().into())
         }
     );
     assert_eq!(
         result.version,
         ModinfoValueVersion {
             value: version,
-            compat: Some("A99".to_string())
+            compat: Some("A99".to_owned().into())
         }
     );
     assert_eq!(
         result.description,
         ModinfoValue {
-            value: Some("Mod to show format of ModInfo v2".to_string())
+            value: Some("Mod to show format of ModInfo v2".to_owned().into())
         }
     );
     assert_eq!(
         result.author,
         ModinfoValue {
-            value: Some("Name".to_string())
+            value: Some("Name".to_owned().into())
         }
     );
     assert_eq!(
         result.website,
         ModinfoValue {
-            value: Some("HP".to_string())
+            value: Some("HP".to_owned().into())
         }
     );
 }
@@ -120,13 +120,13 @@ fn from_str_v2_no_compat_test() {
     assert_eq!(
         result.name,
         ModinfoValue {
-            value: Some("SomeInternalName".to_string())
+            value: Some("SomeInternalName".to_owned().into())
         }
     );
     assert_eq!(
         result.display_name,
         ModinfoValue {
-            value: Some("Official Mod Name".to_string())
+            value: Some("Official Mod Name".to_owned().into())
         }
     );
     assert_eq!(
@@ -139,19 +139,19 @@ fn from_str_v2_no_compat_test() {
     assert_eq!(
         result.description,
         ModinfoValue {
-            value: Some("Mod to show format of ModInfo v2".to_string())
+            value: Some("Mod to show format of ModInfo v2".to_owned().into())
         }
     );
     assert_eq!(
         result.author,
         ModinfoValue {
-            value: Some("Name".to_string())
+            value: Some("Name".to_owned().into())
         }
     );
     assert_eq!(
         result.website,
         ModinfoValue {
-            value: Some("HP".to_string())
+            value: Some("HP".to_owned().into())
         }
     );
 }

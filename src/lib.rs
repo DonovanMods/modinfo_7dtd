@@ -10,6 +10,10 @@ use std::{
     str::FromStr,
 };
 
+#[cfg(test)]
+// mod tests;
+mod tests;
+
 // Include Modules
 mod impls;
 pub use impls::*;
@@ -386,7 +390,7 @@ fn parse_attributes(input: attributes::Attributes) -> HashMap<String, String> {
 ///
 /// # Arguments
 ///
-/// * `file` - a std::fs::Path object pointing to the Modinfo.xml file
+/// * `file` - a std::path::PathBuf object pointing to the Modinfo.xml file
 ///
 /// # Errors
 ///
@@ -397,8 +401,8 @@ fn parse_attributes(input: attributes::Attributes) -> HashMap<String, String> {
 /// * `ModinfoError::NoModinfoValueVersion` - no Version value found (required)
 /// * `ModinfoError::XMLError` - an error occurred while trying to parse the XML (invalid format?)
 ///
-pub fn parse(file: PathBuf) -> Result<Modinfo, ModinfoError> {
-    let modinfo = match Path::try_exists(&file) {
+pub fn parse(file: impl AsRef<Path>) -> Result<Modinfo, ModinfoError> {
+    let modinfo = match Path::try_exists(file.as_ref()) {
         Ok(true) => Modinfo::from_str(fs::read_to_string(&file)?.as_ref()),
         Ok(false) => return Err(ModinfoError::FsNotFound),
         Err(err) => return Err(ModinfoError::IoError(err)),
@@ -429,7 +433,7 @@ pub fn parse(file: PathBuf) -> Result<Modinfo, ModinfoError> {
             }
 
             // store the original file path in the metadata
-            modinfo.meta.path = file;
+            modinfo.meta.path = file.as_ref().to_path_buf();
 
             Ok(modinfo)
         }

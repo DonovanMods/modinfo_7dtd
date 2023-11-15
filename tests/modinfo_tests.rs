@@ -1,23 +1,35 @@
-use modinfo::*;
+use std::borrow::Cow;
+
+#[cfg(test)]
+mod fixtures;
 
 #[test]
-fn get_value_for_test() {
-    let modinfo = Modinfo::parse(&fixtures::xml_string_v2()).unwrap();
+fn test_modinfo_parse() {
+    let modinfo = modinfo::parse(fixtures::setup()).unwrap();
 
     assert_eq!(
         modinfo.get_value_for("name"),
-        Some(&String::from("SomeInternalName"))
+        Some(&Cow::from("SomeInternalName"))
     );
     assert_eq!(
         modinfo.get_value_for("display_name"),
-        Some(&String::from("Official Mod Name"))
+        Some(&Cow::from("Official Mod Name"))
     );
-    assert_eq!(modinfo.get_value_for("author"), Some(&String::from("Name")));
-    assert_eq!(modinfo.get_value_for("compat"), Some(&String::from("A99")));
+    assert_eq!(modinfo.get_version().to_string(), "1.2.3".to_owned());
+    assert_eq!(modinfo.get_value_for("compat"), Some(&Cow::from("A99")));
+    assert_eq!(
+        modinfo.get_value_for("author"),
+        Some(&Cow::from("Author Name"))
+    );
     assert_eq!(
         modinfo.get_value_for("description"),
-        Some(&String::from("Mod to show format of ModInfo v2"))
+        Some(&Cow::from("Mod to show format of ModInfo v2"))
     );
-    assert_eq!(modinfo.get_value_for("website"), Some(&String::from("HP")));
+    assert_eq!(
+        modinfo.get_value_for("website"),
+        Some(&Cow::from("https://example.org"))
+    );
     assert_eq!(modinfo.get_value_for("foo"), None);
+
+    fixtures::cleanup();
 }

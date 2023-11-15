@@ -1,10 +1,7 @@
-pub use modinfo::*;
+pub use super::*;
 
 #[cfg(test)]
 mod fixtures;
-
-#[cfg(test)]
-mod modinfo_tests;
 
 #[cfg(test)]
 mod modinfo_from_string_tests;
