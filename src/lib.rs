@@ -4,11 +4,12 @@ use semver::{BuildMetadata, Prerelease, Version};
 use std::{
     borrow::Cow,
     collections::HashMap,
-    error, fmt, fs,
+    fmt, fs,
     io::Cursor,
     path::{Path, PathBuf},
     str::FromStr,
 };
+use thiserror::Error;
 
 #[cfg(test)]
 // mod tests;
@@ -22,53 +23,34 @@ mod version_tools;
 pub use version_tools::*;
 
 /// Errors that can occur while parsing a ModInfo.xml file
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum ModinfoError {
+    #[error("I/O error occurred: {0}")]
     IoError(std::io::Error),
+    #[error("Invalid version: {0}")]
     InvalidVersion(lenient_semver_parser::Error<'static>),
+    #[error("File not found")]
     FsNotFound,
+    #[error("No modinfo.xml found")]
     NoModinfo,
+    #[error("No Author found in modinfo.xml")]
     NoModinfoAuthor,
+    #[error("No Description found in modinfo.xml")]
     NoModinfoDescription,
-    NoModinfoDisplayName,
+    #[error("No Name found in modinfo.xml")]
     NoModinfoName,
+    #[error("No Version found in modinfo.xml")]
     NoModinfoVersion,
+    #[error("Unable to determine the version for modinfo.xml")]
     NoModinfoValueVersion,
-    NoModinfoVersionCompat,
-    NoModinfoWebsite,
+    #[error("Unknown tag: {0}")]
     UnknownTag(String),
+    #[error("Could not write modinfo.xml")]
     WriteError,
+    #[error("Could not parse XML: {0}")]
     XMLError(quick_xml::Error),
 }
 
-impl error::Error for ModinfoError {}
-impl fmt::Display for ModinfoError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            ModinfoError::IoError(err) => write!(f, "I/O error occurred: {}", err),
-            ModinfoError::InvalidVersion(err) => write!(f, "Invalid version: {}", err),
-            ModinfoError::FsNotFound => write!(f, "File not found"),
-            ModinfoError::NoModinfo => write!(f, "No modinfo.xml found"),
-            ModinfoError::NoModinfoAuthor => write!(f, "No Author found in modinfo.xml"),
-            ModinfoError::NoModinfoDescription => write!(f, "No Description found in modinfo.xml"),
-            ModinfoError::NoModinfoDisplayName => {
-                write!(f, "No DisplayName found in modinfo.xml")
-            }
-            ModinfoError::NoModinfoName => write!(f, "No Name found in modinfo.xml"),
-            ModinfoError::NoModinfoVersion => write!(f, "No Version found in modinfo.xml"),
-            ModinfoError::NoModinfoValueVersion => {
-                write!(f, "No Version value found in modinfo.xml")
-            }
-            ModinfoError::NoModinfoVersionCompat => {
-                write!(f, "No Version compat found in modinfo.xml")
-            }
-            ModinfoError::NoModinfoWebsite => write!(f, "No Website found in modinfo.xml"),
-            ModinfoError::UnknownTag(err) => write!(f, "{}", err),
-            ModinfoError::WriteError => write!(f, "Could not write modinfo.xml"),
-            ModinfoError::XMLError(err) => write!(f, "XML error occurred: {}", err),
-        }
-    }
-}
 impl From<std::io::Error> for ModinfoError {
     fn from(err: std::io::Error) -> Self {
         ModinfoError::IoError(err)
@@ -332,6 +314,12 @@ impl FromStr for Modinfo {
                             }
                         }
                         b"Name" => {
+                            if modinfo.display_name.value.is_none() {
+                                modinfo.display_name = ModinfoValue {
+                                    value: Some(value.clone().into()),
+                                }
+                            }
+
                             modinfo.name = ModinfoValue {
                                 value: Some(value.into()),
                             }
@@ -400,9 +388,10 @@ fn parse_attributes(input: attributes::Attributes) -> HashMap<String, String> {
 ///
 /// * `ModinfoError::FsNotFound` - the file does not exist
 /// * `ModinfoError::IoError` - an I/O error occurred
+/// * `ModinfoError::NoModinfoAuthor` - no Author tag found (required)
+/// * `ModinfoError::NoModinfoDescription` - no Description tag found (required)
 /// * `ModinfoError::NoModinfoName` - no Name tag found (required)
-/// * `ModinfoError::NoModinfoDisplayName` - no Name tag found (required) [_V2 only_]
-/// * `ModinfoError::NoModinfoValueVersion` - no Version value found (required)
+/// * `ModinfoError::NoModinfoVersion` - no Version value found (required)
 /// * `ModinfoError::XMLError` - an error occurred while trying to parse the XML (possibly invalid XML structure?)
 ///
 pub fn parse(file: impl AsRef<Path>) -> Result<Modinfo, ModinfoError> {
@@ -420,20 +409,11 @@ pub fn parse(file: impl AsRef<Path>) -> Result<Modinfo, ModinfoError> {
             if modinfo.description.value.is_none() {
                 return Err(ModinfoError::NoModinfoDescription);
             }
-            if modinfo.display_name.value.is_none() {
-                return Err(ModinfoError::NoModinfoDisplayName);
-            }
             if modinfo.name.value.is_none() {
                 return Err(ModinfoError::NoModinfoName);
             }
             if modinfo.version.value.to_string().is_empty() {
-                return Err(ModinfoError::NoModinfoValueVersion);
-            }
-            if modinfo.version.compat.is_none() {
-                return Err(ModinfoError::NoModinfoVersionCompat);
-            }
-            if modinfo.website.value.is_none() {
-                return Err(ModinfoError::NoModinfoWebsite);
+                return Err(ModinfoError::NoModinfoVersion);
             }
 
             // store the original file path in the metadata
