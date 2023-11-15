@@ -6,8 +6,18 @@ description = "Read/Write '7 Days to Die' ModInfo.xml files"
 edition = "2021"
 rust-version = "1.73"
 readme = "README.md"
+homepage = "https://github.com/donovanmods/modinfo_7dtd"
+repository = "https://github.com/donovanmods/modinfo_7dtd"
+documentation = "https://docs.rs/modinfo_7dtd"
 license = "MIT"
-keywords = ["7dtd", "7d2d", "7 days to die", "modinfo", "xml", "mod", "modding"]
+keywords = ["7dtd", "game-dev", "modinfo", "xml", "modding"]
+categories = [
+  "data-structures",
+  "development_tools",
+  "game-development",
+  "parser-implementations",
+]
+exclude = [".trunk/*", "tests/*", "src/tests/*"]
 
 [lib]
 name = "modinfo"

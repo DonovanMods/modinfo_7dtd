@@ -29,11 +29,11 @@ impl Modinfo {
     ///
     /// ```rust
     /// use modinfo::Modinfo;
-    /// use std::borrow::Cow;
     ///
     /// let mut modinfo = Modinfo::default();
     /// modinfo.set_value_for("author", "Joe");
-    /// assert_eq!(modinfo.get_value_for("author"), Some(&Cow::from("Joe")));
+    ///
+    /// assert_eq!(modinfo.get_value_for("author"), Some(&std::borrow::Cow::from("Joe")));
     /// ```
     pub fn get_value_for<F>(&self, field: F) -> Option<&Cow<'_, str>>
     where
@@ -56,11 +56,11 @@ impl Modinfo {
     ///
     /// ```rust
     /// use modinfo::Modinfo;
-    /// use std::borrow::Cow;
     ///
     /// let mut modinfo = Modinfo::default();
     /// modinfo.set_value_for("name", "MyMod");
-    /// assert_eq!(modinfo.get_value_for("name"), Some(&Cow::from("MyMod")));
+    ///
+    /// assert_eq!(modinfo.get_value_for("name"), Some(&std::borrow::Cow::from("MyMod")));
     /// ```
     pub fn set_value_for(&mut self, field: &str, value: &str) {
         match field.to_lowercase().as_ref() {
@@ -84,6 +84,7 @@ impl Modinfo {
     /// use modinfo::Modinfo;
     ///
     /// let modinfo = Modinfo::default();
+    ///
     /// assert_eq!(modinfo.get_version(), &semver::Version::new(0, 1, 0));
     /// ```
     pub fn get_version(&self) -> &Version {
@@ -97,6 +98,7 @@ impl Modinfo {
     ///
     /// let mut modinfo = Modinfo::default();
     /// modinfo.set_version("1.2.3".to_owned());
+    ///
     /// assert_eq!(modinfo.get_version(), &semver::Version::new(1, 2, 3));
     /// ```
     pub fn set_version(&mut self, version: String) {
@@ -113,6 +115,7 @@ impl Modinfo {
     /// use modinfo::{Modinfo, ModinfoVersion};
     ///
     /// let mut modinfo = Modinfo::default();
+    ///
     /// assert_eq!(modinfo.get_modinfo_version(), ModinfoVersion::V2);
     /// ```
     pub fn get_modinfo_version(&self) -> ModinfoVersion {
@@ -130,6 +133,7 @@ impl Modinfo {
     ///
     /// let mut modinfo = Modinfo::default();
     /// modinfo.set_modinfo_version(ModinfoVersion::V1);
+    ///
     /// assert_eq!(modinfo.get_modinfo_version(), ModinfoVersion::V1);
     /// ```
     pub fn set_modinfo_version(&mut self, version: ModinfoVersion) {
@@ -139,11 +143,12 @@ impl Modinfo {
     /// Retrieves the current modinfo.xml file path
     ///
     /// ```rust
-    /// use modinfo::{Modinfo, ModinfoVersion};
+    /// use modinfo::Modinfo;
     /// use std::path::PathBuf;
     ///
     /// let mut modinfo = Modinfo::default();
     /// modinfo.set_file_path(PathBuf::from("modinfo.xml"));
+    ///
     /// assert_eq!(modinfo.get_file_path(), &PathBuf::from("modinfo.xml"));
     /// ```
     pub fn get_file_path(&self) -> &PathBuf {
@@ -156,11 +161,12 @@ impl Modinfo {
     /// such as when creating a new modinfo.xml file.
     ///
     /// ```rust
-    /// use modinfo::{Modinfo, ModinfoVersion};
+    /// use modinfo::Modinfo;
     /// use std::path::PathBuf;
     ///
     /// let mut modinfo = Modinfo::default();
-    /// modinfo.set_file_path(std::path::PathBuf::from("modinfo.xml"));
+    /// modinfo.set_file_path(PathBuf::from("modinfo.xml"));
+    ///
     /// assert_eq!(modinfo.get_file_path(), &PathBuf::from("modinfo.xml"));
     /// ```
     pub fn set_file_path(&mut self, path: PathBuf) {
@@ -171,12 +177,12 @@ impl Modinfo {
     /// sets Minor and Patch to 0, and removes any pre or build data.
     ///
     /// ```rust
-    /// use modinfo::{Modinfo, ModinfoVersion};
-    /// use std::path::PathBuf;
+    /// use modinfo::Modinfo;
     ///
     /// let mut modinfo = Modinfo::default();
     /// modinfo.set_version("1.2.3-foo+bar".to_owned());
     /// modinfo.bump_version_major();
+    ///
     /// assert_eq!(modinfo.get_version(), &semver::Version::new(2, 0, 0));
     /// ```
     pub fn bump_version_major(&mut self) {
@@ -187,12 +193,12 @@ impl Modinfo {
     /// sets Patch to 0, and removes any pre or build data.
     ///
     /// ```rust
-    /// use modinfo::{Modinfo, ModinfoVersion};
-    /// use std::path::PathBuf;
+    /// use modinfo::Modinfo;
     ///
     /// let mut modinfo = Modinfo::default();
     /// modinfo.set_version("1.2.3-foo+bar".to_owned());
     /// modinfo.bump_version_minor();
+    ///
     /// assert_eq!(modinfo.get_version(), &semver::Version::new(1, 3, 0));
     /// ```
     pub fn bump_version_minor(&mut self) {
@@ -203,8 +209,7 @@ impl Modinfo {
     /// and removes any pre or build data.
     ///
     /// ```rust
-    /// use modinfo::{Modinfo, ModinfoVersion};
-    /// use std::path::PathBuf;
+    /// use modinfo::Modinfo;
     ///
     /// let mut modinfo = Modinfo::default();
     /// modinfo.set_version("1.2.3-foo+bar".to_owned());
@@ -218,8 +223,7 @@ impl Modinfo {
     /// Adds a pre-release version to the version field
     ///
     /// ```rust
-    /// use modinfo::{Modinfo, ModinfoVersion};
-    /// use std::path::PathBuf;
+    /// use modinfo::Modinfo;
     ///
     /// let mut modinfo = Modinfo::default();
     /// modinfo.set_version("1.2.3".to_owned());
@@ -233,8 +237,7 @@ impl Modinfo {
     /// Adds build data to the version field
     ///
     /// ```rust
-    /// use modinfo::{Modinfo, ModinfoVersion};
-    /// use std::path::PathBuf;
+    /// use modinfo::Modinfo;
     ///
     /// let mut modinfo = Modinfo::default();
     /// modinfo.set_version("1.2.3".to_owned());

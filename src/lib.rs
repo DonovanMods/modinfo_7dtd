@@ -390,16 +390,20 @@ fn parse_attributes(input: attributes::Attributes) -> HashMap<String, String> {
 ///
 /// # Arguments
 ///
-/// * `file` - a std::path::PathBuf object pointing to the Modinfo.xml file
+/// * `file` - a Path-like object pointing to a ModInfo.xml file
 ///
-/// # Errors
+/// # Returns
+///
+/// A `Result` containing either a `Modinfo` struct or a `ModinfoError`
+///
+/// ## Possible ModinfoError
 ///
 /// * `ModinfoError::FsNotFound` - the file does not exist
 /// * `ModinfoError::IoError` - an I/O error occurred
 /// * `ModinfoError::NoModinfoName` - no Name tag found (required)
 /// * `ModinfoError::NoModinfoDisplayName` - no Name tag found (required) [_V2 only_]
 /// * `ModinfoError::NoModinfoValueVersion` - no Version value found (required)
-/// * `ModinfoError::XMLError` - an error occurred while trying to parse the XML (invalid format?)
+/// * `ModinfoError::XMLError` - an error occurred while trying to parse the XML (possibly invalid XML structure?)
 ///
 pub fn parse(file: impl AsRef<Path>) -> Result<Modinfo, ModinfoError> {
     let modinfo = match Path::try_exists(file.as_ref()) {
