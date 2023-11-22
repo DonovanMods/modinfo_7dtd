@@ -4,7 +4,7 @@ version = "0.1.1"
 authors = ["Donovan C. Young <dyoung522@gmail.com>"]
 description = "Read/Write '7 Days to Die' ModInfo.xml files"
 edition = "2021"
-rust-version = "1.73"
+rust-version = "1.74"
 readme = "README.md"
 homepage = "https://github.com/donovanmods/modinfo_7dtd"
 repository = "https://github.com/donovanmods/modinfo_7dtd"
@@ -22,6 +22,9 @@ exclude = [".trunk/*", "tests/*", "src/tests/*"]
 [lib]
 name = "modinfo"
 crate-type = ["lib"]
+
+[lints.rust]
+unsafe_code = "forbid"
 
 [dependencies]
 convert_case = "0.6.0"
