@@ -1,6 +1,6 @@
 [package]
 name = "modinfo_7dtd"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Donovan C. Young <dyoung522@gmail.com>"]
 description = "Read/Write '7 Days to Die' ModInfo.xml files"
 edition = "2021"
