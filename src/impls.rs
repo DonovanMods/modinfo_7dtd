@@ -119,7 +119,7 @@ impl Modinfo {
     /// assert_eq!(modinfo.get_modinfo_version(), ModinfoVersion::V2);
     /// ```
     pub fn get_modinfo_version(&self) -> ModinfoVersion {
-        self.meta.version
+        self.meta.version.clone()
     }
 
     /// Sets the version of the ModInfo.xml file itesle (V1 or V2)

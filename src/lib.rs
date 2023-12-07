@@ -94,13 +94,13 @@ impl From<lenient_semver_parser::Error<'static>> for ModinfoError {
 ///   <Website value="https://example.org" />
 /// </xml>
 /// ```
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ModinfoVersion {
     V1,
     V2,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
 struct ModinfoValueMeta {
     version: ModinfoVersion,
     path: PathBuf,
@@ -115,7 +115,7 @@ impl Default for ModinfoValueMeta {
     }
 }
 
-#[derive(Clone, Debug, Default, PartialEq)]
+#[derive(Debug, Clone, Default, Eq, Hash, Ord, PartialEq, PartialOrd)]
 struct ModinfoValue {
     value: Option<Cow<'static, str>>,
 }
@@ -129,7 +129,7 @@ impl fmt::Display for ModinfoValue {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Debug, Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
 struct ModinfoValueVersion {
     value: Version,
     compat: Option<Cow<'static, str>>,
@@ -196,7 +196,7 @@ impl Default for ModinfoValueVersion {
 /// assert_eq!(modinfo.get_version(), &semver::Version::new(0, 1, 0));
 /// ```
 ///
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Modinfo {
     author: ModinfoValue,
     description: ModinfoValue,
@@ -222,19 +222,10 @@ impl ToString for Modinfo {
                 .write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), None)))
                 .unwrap();
         }
-        writer
-            .write_event(Event::Start(BytesStart::new(&root_str)))
-            .unwrap();
+        writer.write_event(Event::Start(BytesStart::new(&root_str))).unwrap();
 
         // inject the attributes here
-        for field in [
-            "name",
-            "display_name",
-            "version",
-            "description",
-            "author",
-            "website",
-        ] {
+        for field in ["name", "display_name", "version", "description", "author", "website"] {
             if !is_v2 && (field == "website" || field == "display_name") {
                 continue;
             }
@@ -264,9 +255,7 @@ impl ToString for Modinfo {
             writer.write_event(Event::Empty(elem)).unwrap();
         }
 
-        writer
-            .write_event(Event::End(BytesEnd::new(&root_str)))
-            .unwrap();
+        writer.write_event(Event::End(BytesEnd::new(&root_str))).unwrap();
 
         String::from_utf8(writer.into_inner().into_inner()).unwrap()
     }
@@ -316,7 +305,7 @@ impl FromStr for Modinfo {
                         b"Name" => {
                             if modinfo.display_name.value.is_none() {
                                 modinfo.display_name = ModinfoValue {
-                                    value: Some(value.clone().into()),
+                                    value: Some(value.clone().to_case(Case::Title).into()),
                                 }
                             }
 
@@ -333,10 +322,10 @@ impl FromStr for Modinfo {
                             modinfo.version = ModinfoValueVersion {
                                 value: match lenient_semver::parse_into::<Version>(&value) {
                                     Ok(result) => result.clone(),
-                                    Err(err) => lenient_semver::parse_into::<Version>(
-                                        format!("0.0.0+{}", err).as_ref(),
-                                    )
-                                    .unwrap(),
+                                    Err(err) => {
+                                        lenient_semver::parse_into::<Version>(format!("0.0.0+{}", err).as_ref())
+                                            .unwrap()
+                                    }
                                 },
                                 compat,
                             }

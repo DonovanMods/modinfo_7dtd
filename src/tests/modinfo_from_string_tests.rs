@@ -11,7 +11,12 @@ fn from_str_v1_test() {
             value: Some("SomeInternalName".to_owned().into())
         }
     );
-    assert_eq!(result.display_name, ModinfoValue { value: None });
+    assert_eq!(
+        result.display_name,
+        ModinfoValue {
+            value: Some("Some Internal Name".to_owned().into())
+        }
+    );
     assert_eq!(
         result.version,
         ModinfoValueVersion {
@@ -45,7 +50,12 @@ fn from_str_v1_no_compat_test() {
             value: Some("SomeInternalName".to_owned().into())
         }
     );
-    assert_eq!(result.display_name, ModinfoValue { value: None });
+    assert_eq!(
+        result.display_name,
+        ModinfoValue {
+            value: Some("Some Internal Name".to_owned().into())
+        }
+    );
     assert_eq!(
         result.version,
         ModinfoValueVersion {
